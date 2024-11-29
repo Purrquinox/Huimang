@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id           String         @id @unique @default(uuid())
+  discordID    String?        @unique
+  username     String
+  bio          String
+  avatar       String
+  roles        String[]
+  perms        String[]
+  badges       String[]
+  posts        blogposts[]
+  applications applications[]
+}
+
+model blogposts {
+  id       String   @id @default(uuid())
+  title    String
+  content  String
+  flairs   String[]
+  service  Service
+  author   users    @relation(fields: [authorId], references: [id])
+  authorId String
+}
+
+model applications {
+  creatorid String @db.VarChar(255)
+  owner     users  @relation(fields: [creatorid], references: [id])
+
+  name String @db.VarChar(255)
+  logo String @default("/logo.png") @db.VarChar(255)
+
+  token  String  @unique @db.VarChar(255)
+  active Boolean @default(true)
+
+  permissions String[] @default(["global.*"])
+}
+
+enum Service {
+  SPARKYFLIGHT
+  ANTIRAID
+  SELECTDEV
+}

@@ -1,0 +1,32 @@
+{
+	"name": "huimang",
+	"version": "0.0.1",
+	"description": "",
+	"author": "Purrquinox",
+	"license": "MIT",
+	"keywords": [],
+	"type": "module",
+	"scripts": {
+		"start": "node ./dist/index",
+		"format": "prettier --write .",
+		"tsc": "tsc",
+		"postinstall": "npx prisma generate --schema src/database/schema.prisma",
+		"database:generate": "npx prisma generate --schema src/database/schema.prisma",
+		"database:format": "npx prisma format --schema src/database/schema.prisma",
+		"database:push": "npx prisma db push --schema src/database/schema.prisma",
+		"database:typegen": "npx @kalissaac/prisma-typegen ./src/database/types/prismaTypes.ts ./src/database/schema.prisma"
+	},
+	"dependencies": {
+		"@prisma/client": "^6.0.0",
+		"colors": "^1.4.0",
+		"dotenv": "^16.0.3",
+		"path": "^0.12.7",
+		"prettier": "^2.7.1"
+	},
+	"devDependencies": {
+		"@types/node": "^22.10.1",
+		"prisma": "^6.0.0",
+		"tsx": "^4.19.2",
+		"typescript": "^5.7.2"
+	}
+}
