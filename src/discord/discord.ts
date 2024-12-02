@@ -127,10 +127,10 @@ client.on(Events.ClientReady, async () => {
 	client.user?.setStatus("dnd");
 	client.user?.setActivity("Huimang", { type: ActivityType.Watching });
 
-	(client.channels.cache.get("1211028615412850689") as any).send({
+	/*(client.channels.cache.get("1211028615412850689") as any).send({
 		content:
 			"Running Huimang v0.0.1\n\t| Port: 6969 | Environment: Development | Database: production |",
-	});
+	});*/
 });
 
 // Interaction Event
