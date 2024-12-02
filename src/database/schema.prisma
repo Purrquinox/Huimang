@@ -9,8 +9,8 @@ datasource db {
 
 model users {
   id           String         @id @unique @default(uuid())
-  discordID    String?        @unique
-  username     String
+  discordid    String?        @unique
+  username     String         @unique
   bio          String
   avatar       String
   roles        String[]

@@ -1,11 +1,15 @@
 // Import packages
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import crypto from "crypto";
 const prisma = new PrismaClient(); // Configure PrismaClient
 
 // Users
 class Users {
-	static async createUser(username: string, bio: string, avatar: string) {
+	static async createUser(
+		username: string,
+		bio: string,
+		avatar: string
+	): Promise<boolean | Error> {
 		try {
 			await prisma.users.create({
 				data: {
@@ -24,7 +28,7 @@ class Users {
 		}
 	}
 
-	static async get(data: any) {
+	static async get(data: Prisma.usersWhereUniqueInput) {
 		const doc = await prisma.users.findUnique({
 			where: data,
 			include: {
@@ -37,7 +41,7 @@ class Users {
 		else return doc;
 	}
 
-	static async find(data: any) {
+	static async find(data: Prisma.usersWhereInput) {
 		const docs = await prisma.users.findMany({
 			where: data,
 			include: {
@@ -49,7 +53,7 @@ class Users {
 		return docs;
 	}
 
-	static async updateUser(id: string, data: object) {
+	static async updateUser(id: string, data: any): Promise<boolean | Error> {
 		try {
 			await prisma.users.update({
 				where: {
@@ -206,7 +210,7 @@ class Applications {
 		}
 	}
 
-	static async delete(data: any) {
+	static async delete(data: Prisma.applicationsWhereUniqueInput) {
 		try {
 			await prisma.applications.delete({
 				where: data,
