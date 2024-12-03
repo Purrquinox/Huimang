@@ -1,11 +1,15 @@
 // Import packages
-import { PrismaClient } from "@prisma/client";
+import { blogposts, Prisma, PrismaClient } from "@prisma/client";
 import crypto from "crypto";
 const prisma = new PrismaClient(); // Configure PrismaClient
 
 // Users
 class Users {
-	static async createUser(username: string, bio: string, avatar: string) {
+	static async createUser(
+		username: string,
+		bio: string,
+		avatar: string
+	): Promise<boolean | Error> {
 		try {
 			await prisma.users.create({
 				data: {
@@ -24,7 +28,7 @@ class Users {
 		}
 	}
 
-	static async get(data: any) {
+	static async get(data: Prisma.usersWhereUniqueInput) {
 		const doc = await prisma.users.findUnique({
 			where: data,
 			include: {
@@ -37,7 +41,7 @@ class Users {
 		else return doc;
 	}
 
-	static async find(data: any) {
+	static async find(data: Prisma.usersWhereInput) {
 		const docs = await prisma.users.findMany({
 			where: data,
 			include: {
@@ -49,7 +53,7 @@ class Users {
 		return docs;
 	}
 
-	static async updateUser(id: string, data: object) {
+	static async updateUser(id: string, data: any): Promise<boolean | Error> {
 		try {
 			await prisma.users.update({
 				where: {
@@ -79,6 +83,83 @@ class Users {
 			});
 
 			await prisma.users.delete({
+				where: {
+					id: id,
+				},
+			});
+
+			return true;
+		} catch (err) {
+			return err;
+		}
+	}
+}
+
+// BlogPosts
+class BlogPosts {
+	static async createPost(post: blogposts): Promise<boolean | Error> {
+		try {
+			await prisma.blogposts.create({
+				data: post,
+			});
+
+			return true;
+		} catch (error) {
+			return error;
+		}
+	}
+
+	static async get(data: Prisma.blogpostsWhereUniqueInput) {
+		const doc = await prisma.blogposts.findUnique({
+			where: data,
+			include: {
+				author: true,
+			},
+		});
+
+		if (!doc) return null;
+		else return doc;
+	}
+
+	static async find(data: Prisma.blogpostsWhereInput) {
+		const docs = await prisma.blogposts.findMany({
+			where: data,
+			include: {
+				author: true,
+			},
+		});
+
+		return docs;
+	}
+
+	static async GetAllPosts() {
+		const docs = await prisma.blogposts.findMany({
+			include: {
+				author: true,
+			},
+		});
+
+		return docs;
+	}
+
+	static async updatePost(id: string, data: any): Promise<boolean | Error> {
+		try {
+			await prisma.blogposts.update({
+				where: {
+					id: id,
+				},
+				data: data,
+			});
+
+			return true;
+		} catch (err) {
+			return err;
+		}
+	}
+
+	static async delete(id: string) {
+		try {
+			await prisma.blogposts.delete({
 				where: {
 					id: id,
 				},
@@ -206,7 +287,7 @@ class Applications {
 		}
 	}
 
-	static async delete(data: any) {
+	static async delete(data: Prisma.applicationsWhereUniqueInput) {
 		try {
 			await prisma.applications.delete({
 				where: data,
@@ -220,4 +301,4 @@ class Applications {
 }
 
 // Export Classes
-export { Users, Applications };
+export { Users, BlogPosts, Applications };

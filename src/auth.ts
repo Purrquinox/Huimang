@@ -1,5 +1,5 @@
-import * as database from "database";
-import { hasPerm } from "purrperms";
+import * as database from "./database/prisma.js";
+import { hasPerm } from "./perms.js";
 
 const getAuth = async (token: string, perm: string) => {
 	let apiToken: any;
