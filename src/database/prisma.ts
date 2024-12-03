@@ -1,5 +1,5 @@
 // Import packages
-import { Prisma, PrismaClient } from "@prisma/client";
+import { blogposts, Prisma, PrismaClient } from "@prisma/client";
 import crypto from "crypto";
 const prisma = new PrismaClient(); // Configure PrismaClient
 
@@ -83,6 +83,83 @@ class Users {
 			});
 
 			await prisma.users.delete({
+				where: {
+					id: id,
+				},
+			});
+
+			return true;
+		} catch (err) {
+			return err;
+		}
+	}
+}
+
+// BlogPosts
+class BlogPosts {
+	static async createPost(post: blogposts): Promise<boolean | Error> {
+		try {
+			await prisma.blogposts.create({
+				data: post,
+			});
+
+			return true;
+		} catch (error) {
+			return error;
+		}
+	}
+
+	static async get(data: Prisma.blogpostsWhereUniqueInput) {
+		const doc = await prisma.blogposts.findUnique({
+			where: data,
+			include: {
+				author: true,
+			},
+		});
+
+		if (!doc) return null;
+		else return doc;
+	}
+
+	static async find(data: Prisma.blogpostsWhereInput) {
+		const docs = await prisma.blogposts.findMany({
+			where: data,
+			include: {
+				author: true,
+			},
+		});
+
+		return docs;
+	}
+
+	static async GetAllPosts() {
+		const docs = await prisma.blogposts.findMany({
+			include: {
+				author: true,
+			},
+		});
+
+		return docs;
+	}
+
+	static async updatePost(id: string, data: any): Promise<boolean | Error> {
+		try {
+			await prisma.blogposts.update({
+				where: {
+					id: id,
+				},
+				data: data,
+			});
+
+			return true;
+		} catch (err) {
+			return err;
+		}
+	}
+
+	static async delete(id: string) {
+		try {
+			await prisma.blogposts.delete({
 				where: {
 					id: id,
 				},
@@ -224,4 +301,4 @@ class Applications {
 }
 
 // Export Classes
-export { Users, Applications };
+export { Users, BlogPosts, Applications };

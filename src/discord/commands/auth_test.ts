@@ -7,7 +7,7 @@ export default {
 		meta: new SlashCommandBuilder()
 			.setName("auth_test")
 			.setDescription("Test usage of authorization and purrperms."),
-		category: "general",
+		category: "account",
 		accountRequired: true,
 		permissionRequired: "user.read",
 	},

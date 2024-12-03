@@ -1,9 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import {
-	ChatInputCommandInteraction,
-	Client,
-	EmbedBuilder
-} from "discord.js";
+import { ChatInputCommandInteraction, Client, EmbedBuilder } from "discord.js";
 import { Users } from "../../database/prisma.js";
 
 export default {
@@ -17,7 +13,7 @@ export default {
 					.setDescription("Write a description about yourself.")
 					.setRequired(true)
 			),
-		category: "general",
+		category: "account",
 		accountRequired: false,
 		permissionRequired: null,
 	},
