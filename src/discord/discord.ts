@@ -26,7 +26,11 @@ let DISCORD_SERVER_URI: String = "https://discord.gg/XbJEUs58y4";
 
 // Create Discord Client
 const client: Client = new Client({
-	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+	],
 });
 
 // Get files from directory
@@ -133,6 +137,24 @@ client.on(Events.ClientReady, async () => {
 	});*/
 });
 
+// Message Create Event
+client.on(Events.MessageCreate, async (message) => {
+	if (message.content != "perms") return;
+
+	const user = await database.Users.get({
+		discordid: message.member.id,
+	});
+	if (user)
+		message.reply(
+			`User: ${user.username} | Perms: \`${
+				user.perms
+			}\` | Admin Permission: ${hasPerm(
+				user.perms,
+				"admin.*"
+			)} | Global Permission: ${hasPerm(user.perms, "global.*")}`
+		);
+});
+
 // Interaction Event
 client.on(Events.InteractionCreate, async (interaction) => {
 	// Slash Command
@@ -190,11 +212,11 @@ client.on(Events.InteractionCreate, async (interaction) => {
 									new EmbedBuilder()
 										.setTitle("Oops! Missing Permissions!")
 										.setDescription(
-											`You do not have enough permissions to execute this command.\nPermissions Provided: **${
+											`You do not have enough permissions to execute this command.\nPermissions Provided: **\`${
 												user.perms.join(", ") || "None"
-											}**\n Permission Required: **${
+											}\`**\n Permission Required: **\`${
 												command.data.permissionRequired
-											}**.`
+											}\`**.`
 										)
 										.setColor("Random"),
 								],
@@ -205,7 +227,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 								new EmbedBuilder()
 									.setTitle("Oops! Missing Permissions!")
 									.setDescription(
-										`You do not have enough permissions to execute this command. Permission Required: **${command.data.permissionRequired}**.`
+										`You do not have enough permissions to execute this command. Permission Required: **\`${command.data.permissionRequired}\`*.`
 									)
 									.setColor("Random"),
 							],
