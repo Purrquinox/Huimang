@@ -77,7 +77,7 @@ We encourage community involvement! To contribute:
 
 ## License
 
-Huimang is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
+Huimang is licensed under the AGPL-3.0 License. See the [LICENSE](LICENSE) file for more information.
 
 ## Acknowledgments
 
