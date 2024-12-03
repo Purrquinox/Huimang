@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { ChatInputCommandInteraction, Client, EmbedBuilder } from "discord.js";
-import { platforms } from "../../common.js";
+import { ChatInputCommandInteraction, Client } from "discord.js";
+import { Embed, platforms } from "../../common.js";
 import { BlogPosts } from "../../database/prisma.js";
 import { Service } from "../../database/types/prismaTypes.js";
 import paginationEmbed from "../modules/pagination.js";
@@ -41,20 +41,14 @@ export default {
 		if (posts.length != 0) {
 			// Send the posts data as an embed in the interaction's reply message
 			const pages = posts.map((i) => {
-				return new EmbedBuilder()
+				return new Embed()
 					.setTitle(`${i.title} | [${i.flairs.join(", ")}]`)
+					.setDescription(i.content)
 					.setAuthor({
 						name: i.author.username,
 						iconURL: i.author.avatar,
 					})
-					.setURL(`https://huimang.purrquinox.com/post/${i.id}`)
-					.setThumbnail("https://selectdev.me/logo.png")
-					.setColor("Random")
-					.setDescription(i.content)
-					.setFooter({
-						iconURL: interaction.user.displayAvatarURL(),
-						text: `Requested by ${interaction.user.username}.`,
-					});
+					.default(interaction);
 			});
 
 			await paginationEmbed(interaction, pages, []);

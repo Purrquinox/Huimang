@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { ChatInputCommandInteraction, Client, EmbedBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Client } from "discord.js";
 import { Users } from "../../database/prisma.js";
+import { Embed } from "../../common.js";
 
 export default {
 	data: {
@@ -54,16 +55,10 @@ export default {
 		// Send the user data as an embed in the interaction's reply message
 		await interaction.reply({
 			embeds: [
-				new EmbedBuilder()
+				new Embed()
 					.setTitle("User Data")
-					.setURL("https://huimang.purrquinox.com/")
-					.setThumbnail("https://selectdev.me/logo.png")
-					.setColor("Orange")
 					.addFields(data)
-					.setFooter({
-						iconURL: interaction.user.displayAvatarURL(),
-						text: `Executed by ${interaction.user.username}.`,
-					}),
+					.default(interaction),
 			],
 			fetchReply: true,
 		});

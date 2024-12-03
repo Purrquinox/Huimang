@@ -1,9 +1,10 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { ChatInputCommandInteraction, Client, EmbedBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Client } from "discord.js";
 import { Users, BlogPosts } from "../../database/prisma.js";
 import { Service } from "../../database/types/prismaTypes.js";
 import { randomUUID } from "crypto";
 import { platforms } from "../../common.js";
+import { Embed } from "../../common.js";
 
 export default {
 	data: {
@@ -70,16 +71,10 @@ export default {
 			// Send the post data as an embed in the interaction's reply message
 			await interaction.reply({
 				embeds: [
-					new EmbedBuilder()
+					new Embed()
 						.setTitle("Post Created")
-						.setURL("https://huimang.purrquinox.com/")
-						.setThumbnail("https://selectdev.me/logo.png")
-						.setColor("Orange")
 						.setDescription(JSON.stringify(postData))
-						.setFooter({
-							iconURL: interaction.user.displayAvatarURL(),
-							text: `Executed by ${interaction.user.username}.`,
-						}),
+						.default(interaction),
 				],
 				fetchReply: true,
 			});

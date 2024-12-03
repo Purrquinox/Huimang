@@ -3,10 +3,10 @@ import {
 	ChatInputCommandInteraction,
 	Client,
 	ComponentType,
-	EmbedBuilder,
 	StringSelectMenuBuilder,
 	StringSelectMenuOptionBuilder,
 } from "discord.js";
+import { Embed } from "../../common.js";
 
 export default {
 	data: {
@@ -98,15 +98,13 @@ export default {
 		// Reply
 		const resp = await interaction.reply({
 			embeds: [
-				new EmbedBuilder()
+				new Embed()
 					.setTitle("Huimang Help")
-					.setURL("https://huimang.purrquinox.com/")
-					.setThumbnail("https://selectdev.me/logo.png")
-					.setColor("Random")
 					.setDescription(
 						"Hello, there. Do you need help with Huimang? Well, look no further! Here are a few commands that you can use to get you started!"
 					)
-					.addFields(embedFields),
+					.addFields(embedFields)
+					.default(interaction),
 			],
 			components: [
 				new ActionRowBuilder().addComponents(
@@ -130,11 +128,8 @@ export default {
 					ephemeral: true,
 				});
 			else {
-				const embed = new EmbedBuilder()
+				const embed = new Embed()
 					.setTitle(`${i.values[0]} Help`)
-					.setURL("https://huimang.purrquinox.com/")
-					.setThumbnail("https://selectdev.me/logo.png")
-					.setColor("Random")
 					.setDescription(
 						`Hey, there! Almost missed ya. Let's try to get you some help with our ${i.values[0]} commands!`
 					)
@@ -150,7 +145,8 @@ export default {
 								inline: true,
 							};
 						})
-					);
+					)
+					.default(interaction);
 
 				await resp.edit({
 					embeds: [embed],

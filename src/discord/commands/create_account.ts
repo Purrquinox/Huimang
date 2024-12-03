@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { ChatInputCommandInteraction, Client, EmbedBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Client } from "discord.js";
 import { Users } from "../../database/prisma.js";
+import { Embed } from "../../common.js";
 
 export default {
 	data: {
@@ -29,12 +30,12 @@ export default {
 		if (user) {
 			await interaction.reply({
 				embeds: [
-					new EmbedBuilder()
+					new Embed()
 						.setTitle("Oops! Already Have an Account!")
 						.setDescription(
 							"You already have an account linked to this Discord account. If you need help or have any questions, please don't hesitate to ask."
 						)
-						.setColor("Random"),
+						.default(interaction),
 				],
 			});
 			return;
@@ -60,12 +61,12 @@ export default {
 				if (update) {
 					await interaction.reply({
 						embeds: [
-							new EmbedBuilder()
+							new Embed()
 								.setTitle("Account Created")
 								.setDescription(
 									`Your account has been created with the username \`${interaction.user.username}\`. You can now use Huimang commands and features.`
 								)
-								.setColor("Random"),
+								.default(interaction),
 						],
 					});
 				}

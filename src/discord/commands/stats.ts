@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { ChatInputCommandInteraction, Client, EmbedBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Client } from "discord.js";
+import { Embed } from "../../common.js";
 
 export default {
 	data: {
@@ -18,18 +19,12 @@ export default {
 		// Send original reply
 		const reply = await interaction.reply({
 			embeds: [
-				new EmbedBuilder()
+				new Embed()
 					.setTitle("Pinging!")
-					.setURL("https://huimang.purrquinox.com/")
-					.setThumbnail("https://selectdev.me/logo.png")
-					.setColor("Orange")
 					.setDescription(
 						`Checking Gateway Latency & Roundtrip Latency...`
 					)
-					.setFooter({
-						iconURL: interaction.user.displayAvatarURL(),
-						text: `Executed by ${interaction.user.username}.`,
-					}),
+					.default(interaction),
 			],
 			fetchReply: true,
 		});
@@ -59,11 +54,8 @@ export default {
 		// Edit original reply
 		reply.edit({
 			embeds: [
-				new EmbedBuilder()
+				new Embed()
 					.setTitle("Statistics!")
-					.setURL("https://huimang.purrquinox.com/")
-					.setThumbnail("https://selectdev.me/logo.png")
-					.setColor("Blue")
 					.setDescription("I hope it looks good :eyes:")
 					.addFields(
 						{
@@ -92,10 +84,7 @@ export default {
 							inline: true,
 						}
 					)
-					.setFooter({
-						iconURL: interaction.user.displayAvatarURL(),
-						text: `Executed by ${interaction.user.username}.`,
-					}),
+					.default(interaction),
 			],
 		});
 	},
