@@ -1,5 +1,5 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { ChatInputCommandInteraction, Client } from "discord.js";
+import { ButtonBuilder, SlashCommandBuilder } from "@discordjs/builders";
+import { ButtonStyle, ChatInputCommandInteraction, Client } from "discord.js";
 import { Embed, platforms } from "../../common.js";
 import { BlogPosts } from "../../database/prisma.js";
 import { Service } from "../../database/types/prismaTypes.js";
@@ -51,7 +51,22 @@ export default {
 					.default(interaction);
 			});
 
-			await paginationEmbed(interaction, pages, []);
+			await paginationEmbed(interaction, pages, [
+				{
+					button: new ButtonBuilder()
+						.setCustomId("edit")
+						.setLabel("Edit Post")
+						.setStyle(ButtonStyle.Primary),
+					execute: async (page, collector) => {},
+				},
+				{
+					button: new ButtonBuilder()
+						.setCustomId("delete")
+						.setLabel("Delete Post")
+						.setStyle(ButtonStyle.Danger),
+					execute: async (page, collector) => {},
+				},
+			]);
 		} else {
 			await interaction.reply({
 				content: "No posts found for the specified platform.",

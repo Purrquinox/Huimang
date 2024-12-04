@@ -38,6 +38,9 @@ export default {
 			.map(([key, value]) => {
 				if (key === "posts") return;
 				let newValue: string = String(value);
+
+				if (key === "perms")
+					newValue = `\`${String(value).replaceAll(",", ", ")}\``;
 				if (
 					newValue === null ||
 					newValue.length === 0 ||

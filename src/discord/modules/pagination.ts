@@ -118,17 +118,19 @@ const paginationEmbed = async (
 	collector.on("end", (_, reason) => {
 		if (reason !== "messageDelete") {
 			const disabledRow = new ActionRowBuilder().addComponents(
-				defaultButtons[0].setDisabled(true),
-				defaultButtons[1].setDisabled(true),
-				defaultButtons[2].setDisabled(true)
+				defaultButtons.map((p) => p.setDisabled(true))
 			);
+			const secondDisabledRow = new ActionRowBuilder().addComponents(
+				buttons.map((p) => p.button.setDisabled(true))
+			);
+
 			curPage.edit({
 				embeds: [
 					pages[page].setFooter({
 						text: `Page ${page + 1} / ${pages.length}`,
 					}),
 				],
-				components: [disabledRow],
+				components: [disabledRow, secondDisabledRow],
 			});
 		}
 	});

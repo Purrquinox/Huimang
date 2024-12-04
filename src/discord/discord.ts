@@ -20,6 +20,7 @@ import {
 } from "discord.js";
 import { debug, info, error } from "../logger.js";
 import "dotenv/config";
+import { Embed } from "../common.js";
 
 // Config
 let DISCORD_SERVER_URI: String = "https://discord.gg/XbJEUs58y4";
@@ -130,11 +131,6 @@ client.on(Events.ClientReady, async () => {
 	info("Discord", `Logged in as ${client.user?.tag}!`);
 	client.user?.setStatus("dnd");
 	client.user?.setActivity("Huimang", { type: ActivityType.Watching });
-
-	/*(client.channels.cache.get("1211028615412850689") as any).send({
-		content:
-			"Running Huimang v0.0.1\n\t| Port: 6969 | Environment: Development | Database: production |",
-	});*/
 });
 
 // Message Create Event
@@ -144,15 +140,41 @@ client.on(Events.MessageCreate, async (message) => {
 	const user = await database.Users.get({
 		discordid: message.member.id,
 	});
-	if (user)
-		message.reply(
-			`User: ${user.username} | Perms: \`${
-				user.perms
-			}\` | Admin Permission: ${hasPerm(
-				user.perms,
-				"admin.*"
-			)} | Global Permission: ${hasPerm(user.perms, "global.*")}`
-		);
+	if (user) {
+		message.reply({
+			embeds: [
+				new Embed()
+					.setTitle("Permissions")
+					.setFields(
+						{
+							name: "Username:",
+							value: `${user.username}`,
+							inline: true,
+						},
+						{
+							name: "Base Permissions:",
+							value: `\`${user.perms}\``,
+							inline: true,
+						},
+						{
+							name: "Admin Permission:",
+							value: `${hasPerm(user.perms, "admin.*")}`,
+							inline: true,
+						},
+						{
+							name: "Global Permission:",
+							value: `${hasPerm(user.perms, "global.*")}`,
+							inline: true,
+						}
+					)
+					.setAuthor({
+						name: message.member.user.username,
+						iconURL: message.member.user.displayAvatarURL(),
+					})
+					.msgdefault(message),
+			],
+		});
+	}
 });
 
 // Interaction Event
