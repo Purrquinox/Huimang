@@ -69,7 +69,7 @@ export default {
 				})
 				.filter((p) => p != undefined);
 
-            // Create an array of buttons for the interaction response
+			// Create an array of buttons for the interaction response
 			let buttons: ButtonBuilder[] = [
 				new ButtonBuilder()
 					.setCustomId("editprofile")
@@ -81,15 +81,15 @@ export default {
 					.setStyle(ButtonStyle.Danger),
 			];
 
-            // Disable edit and delete buttons if the user is not the owner of the profile
+			// Disable edit and delete buttons if the user is not the owner of the profile
 			if (interaction.user.id != user.discordid) {
 				buttons = buttons.map((p) => {
 					p.setDisabled(true);
 					return p;
 				});
-			};
+			}
 
-            // Create an ActionRow with the buttons
+			// Create an ActionRow with the buttons
 			let components = new ActionRowBuilder().addComponents(buttons);
 
 			// Send the user data as an embed in the interaction's reply message

@@ -7,12 +7,12 @@ import {
 } from "discord.js";
 
 const paginationEmbed = async (
-	interaction,
+	interaction: any,
 	pages: EmbedBuilder[],
 	buttons: {
 		button: ButtonBuilder;
 		execute: (page: EmbedBuilder, collector: any) => Promise<void>;
-	}[],
+	}[] = [],
 	timeout: number = 120000
 ) => {
 	if (!pages) throw new Error("Pages are not given.");

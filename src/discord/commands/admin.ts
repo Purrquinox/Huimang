@@ -49,6 +49,40 @@ export default {
 							)
 							.setRequired(true)
 					)
+			)
+			.addSubcommand((command) =>
+				command
+					.setName("role_add")
+					.setDescription("Give user a role.")
+					.addStringOption((perm) =>
+						perm
+							.setName("role")
+							.setDescription("The role to give to the user.")
+							.setRequired(true)
+					)
+					.addUserOption((user) =>
+						user
+							.setName("user")
+							.setDescription("The user to give the role to.")
+							.setRequired(true)
+					)
+			)
+			.addSubcommand((command) =>
+				command
+					.setName("role_remove")
+					.setDescription("Remove role from user.")
+					.addStringOption((perm) =>
+						perm
+							.setName("role")
+							.setDescription("The role to remove from the user.")
+							.setRequired(true)
+					)
+					.addUserOption((user) =>
+						user
+							.setName("user")
+							.setDescription("The user to remove the role from.")
+							.setRequired(true)
+					)
 			),
 		category: "admin",
 		accountRequired: true,
@@ -108,6 +142,64 @@ export default {
 							.setTitle("Permission Removed")
 							.setDescription(
 								`The permission \`${perm}\` has been removed from the user \`${
+									interaction.options.getUser("user").username
+								}\`.`
+							)
+							.default(interaction),
+					],
+				});
+			}
+		}
+
+		// Add Role
+		if (interaction.options.getSubcommand() === "role_add") {
+			let target = await Users.get({
+				discordid: interaction.options.getUser("user").id,
+			});
+
+			if (target) {
+				const role = interaction.options.getString("role");
+				target.roles.push(role);
+
+				await Users.updateUser(target.id, {
+					roles: target.roles,
+				});
+
+				await interaction.reply({
+					embeds: [
+						new Embed()
+							.setTitle("Role Added")
+							.setDescription(
+								`The role \`${role}\` has been added to the user \`${
+									interaction.options.getUser("user").username
+								}\`.`
+							)
+							.default(interaction),
+					],
+				});
+			}
+		}
+
+		// Remove Role
+		if (interaction.options.getSubcommand() === "role_remove") {
+			let target = await Users.get({
+				discordid: interaction.options.getUser("user").id,
+			});
+
+			if (target) {
+				const role = interaction.options.getString("role");
+				target.roles = target.roles.filter((p) => p != role);
+
+				await Users.updateUser(target.id, {
+					roles: target.roles,
+				});
+
+				await interaction.reply({
+					embeds: [
+						new Embed()
+							.setTitle("Role Removed")
+							.setDescription(
+								`The permission \`${role}\` has been removed from the user \`${
 									interaction.options.getUser("user").username
 								}\`.`
 							)

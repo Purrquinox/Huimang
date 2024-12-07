@@ -12,7 +12,7 @@ dotenv.config();
 
 // Initalize REST
 const rest = new REST({
-	version: "9",
+	version: "10",
 }).setToken(process.env.DISCORD_TOKEN as string);
 
 // Get files from directory

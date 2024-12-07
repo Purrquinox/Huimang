@@ -1,6 +1,7 @@
 // Import packages
 import { blogposts, Prisma, PrismaClient } from "@prisma/client";
 import crypto from "crypto";
+
 const prisma = new PrismaClient(); // Configure PrismaClient
 
 // Users
