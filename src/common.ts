@@ -36,5 +36,22 @@ class Embed extends EmbedBuilder {
 	}
 }
 
+export class ServiceError extends Error {
+    context: Record<string, any>;
+
+    /**
+     * @param message - The error message.
+     * @param context - Additional context about the error.
+     */
+    constructor(message: string, context: Record<string, any> = {}) {
+        super(message);
+        this.name = 'ServiceError';
+        this.context = context;
+
+        // Ensures the correct prototype is used (important for extending Error in TypeScript)
+        Object.setPrototypeOf(this, new.target.prototype);
+    }
+}
+
 // Export everything
-export { Embed, platforms };
+export { Embed, ServiceError, platforms };
