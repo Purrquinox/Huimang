@@ -36,14 +36,16 @@ class Embed extends EmbedBuilder {
 	}
 }
 
+// WIP
 export class ServiceError extends Error {
     context: Record<string, any>;
-
+	
     /**
      * @param message - The error message.
+     * @param interaction - The interaction context
      * @param context - Additional context about the error.
      */
-    constructor(message: string, context: Record<string, any> = {}) {
+    constructor(message: string, interaction: ChatInputCommandInteraction, context: Record<string, any> = {}) {
         super(message);
         this.name = 'ServiceError';
         this.context = context;
