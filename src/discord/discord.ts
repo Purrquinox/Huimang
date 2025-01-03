@@ -153,7 +153,7 @@ client.on(Events.MessageCreate, async (message) => {
 						},
 						{
 							name: "Base Permissions:",
-							value: `\`${user.perms}\``,
+							value: `\`${user.perms.join(", ")}\``,
 							inline: true,
 						},
 						{

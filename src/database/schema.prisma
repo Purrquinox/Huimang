@@ -8,26 +8,66 @@ datasource db {
 }
 
 model users {
-  id           String         @id @unique @default(uuid())
-  discordid    String?        @unique
-  username     String         @unique
-  bio          String
-  avatar       String
-  roles        String[]
-  perms        String[]
-  badges       String[]
-  posts        blogposts[]
-  applications applications[]
+  id        String  @id @unique @default(uuid())
+  discordid String? @unique
+
+  username String @unique
+  bio      String
+  avatar   String
+
+  roles  String[]
+  perms  String[]
+  badges String[]
+
+  posts              blogposts[]
+  infractions        infractions[]       @relation(name: "target")
+  issued_infractions infractions[]       @relation(name: "issuer")
+  leave_of_absences  leave_of_absences[]
+  applications       applications[]
 }
 
 model blogposts {
-  id       String   @id @default(uuid())
-  title    String
-  content  String
-  flairs   String[]
+  id String @id @default(uuid())
+
+  title   String
+  content String
+  flairs  String[]
+
   service  Service
-  author   users    @relation(fields: [authorId], references: [id])
+  author   users   @relation(fields: [authorId], references: [id])
   authorId String
+}
+
+model infractions {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  issuerId String
+  targetId String
+
+  issuer users @relation(name: "issuer", fields: [issuerId], references: [id])
+  target users @relation(name: "target", fields: [targetId], references: [id])
+
+  reason               String
+  staff_notes          String?
+  expected_improvement String?
+  corrective_action    InfractionAction @default(NONE)
+
+  expiryTime   DateTime?
+  acknowledged Boolean   @default(false)
+}
+
+model leave_of_absences {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  user   users  @relation(fields: [userId], references: [id])
+
+  start_date DateTime
+  end_date   DateTime
+  reason     String
+  status     LOAStatus @default(PENDING)
 }
 
 model applications {
@@ -41,6 +81,21 @@ model applications {
   active Boolean @default(true)
 
   permissions String[] @default(["global.*"])
+}
+
+enum InfractionAction {
+  NONE
+  LOSS_OF_PRIVILEGES
+  SUSPENSION
+  TERMINATION
+  WARNING
+  OTHER
+}
+
+enum LOAStatus {
+  PENDING
+  ACCEPTED
+  DENIED
 }
 
 enum Service {

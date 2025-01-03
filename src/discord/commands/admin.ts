@@ -83,6 +83,44 @@ export default {
 							.setDescription("The user to remove the role from.")
 							.setRequired(true)
 					)
+			)
+			.addSubcommand((command) =>
+				command
+					.setName("badge_add")
+					.setDescription("Give user a badge.")
+					.addStringOption((perm) =>
+						perm
+							.setName("badge")
+							.setDescription("The badge to give to the user.")
+							.setRequired(true)
+					)
+					.addUserOption((user) =>
+						user
+							.setName("user")
+							.setDescription("The user to give the badge to.")
+							.setRequired(true)
+					)
+			)
+			.addSubcommand((command) =>
+				command
+					.setName("badge_remove")
+					.setDescription("Remove badge from user.")
+					.addStringOption((perm) =>
+						perm
+							.setName("badge")
+							.setDescription(
+								"The badge to remove from the user."
+							)
+							.setRequired(true)
+					)
+					.addUserOption((user) =>
+						user
+							.setName("user")
+							.setDescription(
+								"The user to remove the badge from."
+							)
+							.setRequired(true)
+					)
 			),
 		category: "admin",
 		accountRequired: true,
@@ -200,6 +238,64 @@ export default {
 							.setTitle("Role Removed")
 							.setDescription(
 								`The permission \`${role}\` has been removed from the user \`${
+									interaction.options.getUser("user").username
+								}\`.`
+							)
+							.default(interaction),
+					],
+				});
+			}
+		}
+
+		// Add Badge
+		if (interaction.options.getSubcommand() === "badge_add") {
+			let target = await Users.get({
+				discordid: interaction.options.getUser("user").id,
+			});
+
+			if (target) {
+				const badge = interaction.options.getString("badge");
+				target.badges.push(badge);
+
+				await Users.updateUser(target.id, {
+					badges: target.badges,
+				});
+
+				await interaction.reply({
+					embeds: [
+						new Embed()
+							.setTitle("Badge Added")
+							.setDescription(
+								`The badge \`${badge}\` has been added to the user \`${
+									interaction.options.getUser("user").username
+								}\`.`
+							)
+							.default(interaction),
+					],
+				});
+			}
+		}
+
+		// Remove Badge
+		if (interaction.options.getSubcommand() === "badge_remove") {
+			let target = await Users.get({
+				discordid: interaction.options.getUser("user").id,
+			});
+
+			if (target) {
+				const badge = interaction.options.getString("badge");
+				target.badges = target.badges.filter((p) => p != badge);
+
+				await Users.updateUser(target.id, {
+					badges: target.badges,
+				});
+
+				await interaction.reply({
+					embeds: [
+						new Embed()
+							.setTitle("Badge Removed")
+							.setDescription(
+								`The badge \`${badge}\` has been removed from the user \`${
 									interaction.options.getUser("user").username
 								}\`.`
 							)
