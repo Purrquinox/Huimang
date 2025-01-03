@@ -34,6 +34,9 @@ class Users {
 			where: data,
 			include: {
 				posts: true,
+                infractions: true,
+                issued_infractions: true,
+                leave_of_absences: true,
 				applications: false,
 			},
 		});
@@ -47,6 +50,9 @@ class Users {
 			where: data,
 			include: {
 				posts: true,
+                infractions: true,
+                issued_infractions: true,
+                leave_of_absences: true,
 				applications: false,
 			},
 		});
