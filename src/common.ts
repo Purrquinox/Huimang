@@ -12,7 +12,7 @@ const platforms = ["Sparkyflight", "AntiRaid", "Selectdev"];
 // Extend EmbedBuilder
 class Embed extends EmbedBuilder {
 	default(interaction: ChatInputCommandInteraction) {
-		this.setURL("https://huimang.purrquinox.com/")
+		this.setURL("https://purrquinox.com/")
 			.setColor("Random")
 			.setTimestamp()
 			.setFooter({
@@ -23,7 +23,7 @@ class Embed extends EmbedBuilder {
 	}
 
 	msgdefault(message: OmitPartialGroupDMChannel<Message<boolean>>) {
-		this.setURL("https://huimang.purrquinox.com/")
+		this.setURL("https://purrquinox.com/")
 			.setColor("Random")
 			.setTimestamp()
 			.setFooter({
