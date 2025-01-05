@@ -19,11 +19,15 @@ model users {
   perms  String[]
   badges String[]
 
-  posts              blogposts[]
+  credits      Int            @default(0)
+  transactions transactions[]
+
+  posts        blogposts[]
+  applications applications[]
+
   infractions        infractions[]       @relation(name: "target")
   issued_infractions infractions[]       @relation(name: "issuer")
   leave_of_absences  leave_of_absences[]
-  applications       applications[]
 }
 
 model blogposts {
@@ -36,6 +40,18 @@ model blogposts {
   service  Service
   author   users   @relation(fields: [authorId], references: [id])
   authorId String
+}
+
+model transactions {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  user   users  @relation(fields: [userId], references: [id])
+
+  amount Int
+  item   String
+  type   TransactionType @default(CREDIT)
 }
 
 model infractions {
@@ -81,6 +97,19 @@ model applications {
   active Boolean @default(true)
 
   permissions String[] @default(["global.*"])
+}
+
+enum TransactionType {
+  CREDIT
+  DEBIT
+  GIFT_CARD
+  REFUND
+  EXCHANGE
+  COMPENSATION
+  DONATION
+  TRANSFER
+  REIMBURSEMENT
+  OTHER
 }
 
 enum InfractionAction {

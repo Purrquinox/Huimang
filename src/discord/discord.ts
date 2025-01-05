@@ -202,9 +202,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 						new ButtonBuilder()
 							.setLabel("Link Account")
 							.setStyle(ButtonStyle.Link)
-							.setURL(
-								"https://purrquinox.com/account/link"
-							)
+							.setURL("https://purrquinox.com/account/link")
 					);
 
 					await interaction.reply({

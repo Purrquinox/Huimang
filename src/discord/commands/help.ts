@@ -32,11 +32,31 @@ export default {
 				name: string;
 				description: string;
 				permissionRequired: string | null;
+				subcommands:
+					| {
+							name: string;
+							description: string;
+							options: any;
+					  }[]
+					| null;
 				options: any;
 			}[];
 		}[] = [];
 
 		otherData.commands.forEach((value, key) => {
+			const subcommands = value.data.meta.options
+				.filter(
+					(i: any) =>
+						i.constructor.name === "SlashCommandSubcommandBuilder"
+				)
+				.map((p: any) => {
+					return {
+						name: p.name,
+						description: p.description,
+						options: p.options,
+					};
+				});
+
 			if (!categories.find((p) => p.name === cap(value.data.category)))
 				categories.push({
 					name: cap(value.data.category),
@@ -45,6 +65,7 @@ export default {
 							name: key,
 							description: value.data.meta.description,
 							permissionRequired: value.data.permissionRequired,
+							subcommands: subcommands,
 							options: value.data.meta.options,
 						},
 					],
@@ -58,6 +79,7 @@ export default {
 					name: key,
 					description: value.data.meta.description,
 					permissionRequired: value.data.permissionRequired,
+					subcommands: subcommands,
 					options: value.data.meta.options,
 				});
 			}
@@ -141,7 +163,14 @@ export default {
 									p.description
 								}\nPermission Required: \`${
 									p.permissionRequired || "None"
-								}\``,
+								}\`\nSubcommands:\n${p.subcommands
+									.map((c, p) => {
+										if (p === 0)
+											return `- ${c.name}: ${c.description}\n`;
+										else
+											return `${c.name}: ${c.description}\n`;
+									})
+									.join("- ")}`,
 								inline: true,
 							};
 						})

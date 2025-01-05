@@ -20,7 +20,7 @@ export default {
 					)
 					.addStringOption((option) =>
 						option
-							.setName("startDate")
+							.setName("start_date")
 							.setDescription(
 								"The start date of the Leave of Absence."
 							)
@@ -28,7 +28,7 @@ export default {
 					)
 					.addStringOption((option) =>
 						option
-							.setName("endDate")
+							.setName("end_date")
 							.setDescription(
 								"The end date of the Leave of Absence."
 							)
@@ -89,14 +89,14 @@ export default {
 					)
 					.addStringOption((option) =>
 						option
-							.setName("startDate")
+							.setName("start_date")
 							.setDescription(
 								"The start date of the Leave of Absence."
 							)
 					)
 					.addStringOption((option) =>
 						option
-							.setName("endDate")
+							.setName("end_date")
 							.setDescription(
 								"The end date of the Leave of Absence."
 							)

@@ -1,9 +1,16 @@
-import { ButtonBuilder, SlashCommandBuilder } from "@discordjs/builders";
+import {
+	ButtonBuilder,
+	ModalBuilder,
+	SlashCommandBuilder,
+	TextInputBuilder,
+} from "@discordjs/builders";
 import {
 	ActionRowBuilder,
+	APIButtonComponentWithCustomId,
 	ButtonStyle,
 	ChatInputCommandInteraction,
 	Client,
+	TextInputStyle,
 } from "discord.js";
 import { Users } from "../../database/prisma.js";
 import { Embed } from "../../common.js";
@@ -50,17 +57,26 @@ export default {
 				inline: boolean;
 			}[] = Object.entries(userObject)
 				.map(([key, value]) => {
-					if (key === "posts") return;
-					let newValue: string = String(value);
+					const hiddenKeys = [
+						"posts",
+						"infractions",
+						"issued_infractions",
+						"transactions",
+						"leave_of_absences",
+					];
+					if (hiddenKeys.includes(key)) return;
 
+					let newValue: string = String(value);
 					if (key === "perms")
 						newValue = `\`${String(value).replaceAll(",", ", ")}\``;
+
 					if (
 						newValue === null ||
 						newValue.length === 0 ||
 						newValue === ""
 					)
 						newValue = "NONE";
+
 					return {
 						name: key,
 						value: newValue,
@@ -93,7 +109,7 @@ export default {
 			let components = new ActionRowBuilder().addComponents(buttons);
 
 			// Send the user data as an embed in the interaction's reply message
-			await interaction.reply({
+			const msg = await interaction.reply({
 				embeds: [
 					new Embed()
 						.setTitle("Profile")
@@ -109,6 +125,138 @@ export default {
 						.default(interaction),
 				],
 				components: [components as any],
+				fetchReply: true,
+			});
+
+			const filter = (i) => {
+				if (
+					buttons.find(
+						(p) =>
+							(
+								p.toJSON() as Partial<APIButtonComponentWithCustomId>
+							).custom_id === i.customId
+					)
+				)
+					return true;
+				else return false;
+			};
+
+			const collector = msg.createMessageComponentCollector({
+				filter,
+				time: 120000,
+			});
+
+			collector.on("collect", async (i) => {
+				const button = buttons.find(
+					(p) => (p.toJSON() as any).custom_id === i.customId
+				);
+
+				if (button) {
+					if (i.customId === "editprofile") {
+						const modal = new ModalBuilder()
+							.setTitle("Edit Profile")
+							.setCustomId("editprofile");
+						const name = new TextInputBuilder()
+							.setLabel("Username")
+							.setCustomId("username")
+							.setRequired(true)
+							.setPlaceholder("What do you prefer to be called?")
+							.setStyle(TextInputStyle.Short)
+							.setValue(user.username);
+						const bio = new TextInputBuilder()
+							.setLabel("Biography")
+							.setCustomId("bio")
+							.setRequired(true)
+							.setPlaceholder("Describe yourself in a few words.")
+							.setStyle(TextInputStyle.Paragraph)
+							.setValue(user.bio);
+						const avatar = new TextInputBuilder()
+							.setLabel("Avatar URL")
+							.setCustomId("avatar")
+							.setRequired(true)
+							.setPlaceholder("Provide a link to your avatar.")
+							.setStyle(TextInputStyle.Short)
+							.setValue(user.avatar);
+
+						modal.addComponents(
+							new ActionRowBuilder().addComponents(name) as any,
+							new ActionRowBuilder().addComponents(bio) as any,
+							new ActionRowBuilder().addComponents(avatar) as any
+						);
+						i.showModal(modal);
+						collector.stop();
+					} else if (i.customId === "deleteprofile") {
+						const d = await i.reply({
+							embeds: [
+								new Embed()
+									.setTitle(
+										"⚠️ Account Deletion Confirmation ⚠️"
+									)
+									.setDescription(
+										"We understand that you want to delete your account, and we want to make sure you're fully informed before proceeding. By confirming below, your account will be permanently deleted. This action is **irreversible**, and once completed, Purrquinox/AntiRaid staff **CANNOT** undo or recover your account."
+									)
+									.addFields({
+										name: "Important Information:",
+										value: "- All purchases and items associated with your account will be permanently lost. No refunds will be issued, and any progress made will be gone forever.\n- You will no longer have access to any services, features, or content tied to your account.\n- This action is **irreversible**",
+									})
+									.default(interaction),
+							],
+							components: [
+								new ActionRowBuilder().addComponents([
+									new ButtonBuilder()
+										.setCustomId("confirm")
+										.setLabel("Delete")
+										.setStyle(ButtonStyle.Danger),
+									new ButtonBuilder()
+										.setCustomId("cancel")
+										.setLabel("Cancel")
+										.setStyle(ButtonStyle.Primary),
+								]) as any,
+							],
+							fetchReply: true,
+						});
+
+						const btncollect = d.createMessageComponentCollector({
+							filter: (i) => {
+								if (["confirm", "cancel"].includes(i.customId))
+									return true;
+								else return false;
+							},
+							time: 120000,
+						});
+
+						btncollect.on("collect", async (a) => {
+							if (a.customId === "confirm") {
+								await Users.delete(user.id);
+								await a.reply({
+									content:
+										"Confirmed. This account has been permanently deleted.",
+									ephemeral: true,
+								});
+								btncollect.stop();
+							} else {
+								await a.reply({
+									content:
+										"Okay! Account deletion has been cancelled.",
+									ephemeral: true,
+								});
+								btncollect.stop();
+							}
+						});
+					} else
+						i.reply({
+							content: `This button currently has no functionality, and is currently in progress of development.\n\`\`\`js\n${JSON.stringify(
+								button
+							)}\n\`\`\`\`\`\`js\n${JSON.stringify(
+								user
+							)}\n\`\`\``,
+						});
+
+					collector.stop();
+				} else
+					i.reply({
+						content: "Invalid interaction.",
+					});
 			});
 		} else {
 			await interaction.reply({
