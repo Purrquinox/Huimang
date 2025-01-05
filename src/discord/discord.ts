@@ -203,7 +203,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 							.setLabel("Link Account")
 							.setStyle(ButtonStyle.Link)
 							.setURL(
-								"https://huimang.purrquinox.com/account/link"
+								"https://purrquinox.com/account/link"
 							)
 					);
 
