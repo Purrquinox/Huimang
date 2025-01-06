@@ -257,7 +257,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 						commands: commands,
 					});
 			} catch (p) {
-				error("Discord", p.toString());
+				error("Discord", p.stack);
 
 				await interaction.reply({
 					embeds: [
@@ -269,7 +269,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 							.setColor("Random")
 							.addFields({
 								name: "Error",
-								value: codeBlock("javascript", p),
+								value: codeBlock("javascript", p.stack),
 								inline: false,
 							}),
 					],

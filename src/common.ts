@@ -9,6 +9,33 @@ import {
 // Huimang Platforms
 const platforms = ["Sparkyflight", "AntiRaid", "Selectdev"];
 
+// Available Permissions
+const permissions: {
+	namespace: string;
+	subnamespace?: string;
+	permissions: string[];
+}[] = [
+	{
+		namespace: "content",
+		permissions: ["add", "edit", "delete"],
+	},
+	{
+		namespace: "admin",
+		permissions: [
+			"perm_add",
+			"perm_remove",
+			"role_add",
+			"role_remove",
+			"badge_add",
+			"badge_remove",
+		],
+	},
+	{
+		namespace: "payments",
+		permissions: ["add", "edit", "delete"],
+	},
+];
+
 // Extend EmbedBuilder
 class Embed extends EmbedBuilder {
 	default(interaction: ChatInputCommandInteraction) {
@@ -60,4 +87,4 @@ class ServiceError extends Error {
 }
 
 // Export everything
-export { Embed, ServiceError, platforms };
+export { Embed, ServiceError, platforms, permissions };
