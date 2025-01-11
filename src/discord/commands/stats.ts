@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { ChatInputCommandInteraction, Client } from "discord.js";
 import { Embed } from "../../common.js";
+import { simpleGit } from "simple-git";
 
 export default {
 	data: {
@@ -16,6 +17,11 @@ export default {
 		interaction: ChatInputCommandInteraction,
 		otherData: any
 	) {
+		// Fetch local git commit information
+		const git = simpleGit();
+		const log = await git.log();
+		const latestCommit = log.latest;
+
 		// Send original reply
 		const reply = await interaction.reply({
 			embeds: [
@@ -59,28 +65,33 @@ export default {
 					.setDescription("I hope it looks good :eyes:")
 					.addFields(
 						{
-							name: "Server Count",
-							value: String(totalGuilds),
-							inline: true,
-						},
-						{
-							name: "Member Count",
-							value: String(totalMembers),
-							inline: true,
-						},
-						{
-							name: "Shard Count",
-							value: String(client.shard.count),
-							inline: true,
-						},
-						{
-							name: `Gateway Latency`,
+							name: `Gateway Latency:`,
 							value: `${interaction.client.ws.ping}ms`,
 							inline: true,
 						},
 						{
-							name: `Roundtrip Latency`,
+							name: `Roundtrip Latency:`,
 							value: `${interactionLatency}ms`,
+							inline: true,
+						},
+						{
+							name: "Git Commit:",
+							value: `${latestCommit.message} - ${latestCommit.author_name} | ${latestCommit.hash}`,
+							inline: true,
+						},
+						{
+							name: "Server Count:",
+							value: `${totalGuilds} server(s)`,
+							inline: true,
+						},
+						{
+							name: "Member Count:",
+							value: `${totalMembers} member(s)`,
+							inline: true,
+						},
+						{
+							name: "Shard Count:",
+							value: `${client.shard.count} shard(s)`,
 							inline: true,
 						}
 					)

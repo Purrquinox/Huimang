@@ -5,8 +5,8 @@ import { Embed, permissions } from "../../common.js";
 export default {
 	data: {
 		meta: new SlashCommandBuilder()
-			.setName("perm-table")
-			.setDescription("Return table of available permissions."),
+			.setName("permissions")
+			.setDescription("Return embed of available permissions."),
 		category: "staff",
 		accountRequired: false,
 		permissionRequired: null,
