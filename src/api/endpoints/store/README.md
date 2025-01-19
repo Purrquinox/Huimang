@@ -37,6 +37,36 @@ The MyPurrquinox Store API allows you to interact with the product catalog and u
 
 ---
 
+## Prisma Types
+
+The API uses Prisma for database access. Here are the types used for products and users.
+
+### Product Type
+```ts
+type Product = {
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+```
+
+### User Type
+```ts
+type User = {
+  id: string;
+  name: string;
+  credits: number;
+  itemsPurchased: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+```
+
+---
+
 ## Authentication
 
 The API uses **API keys** for authentication. Include your API key in the `Authorization` header of your requests:
